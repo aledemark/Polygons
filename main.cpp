@@ -1,6 +1,11 @@
 /// \file main.cpp
-///@brief implementing the usage of the classes
-///
+///@brief by creating the menu selection that allows to use the classes 
+///@param LIMIT max number of the objects
+///@param cnt counter of the acual created objects
+///@param index used for selecting which polygon to draw
+///@param flag used to avoid creating objects over the limit
+///@param pgons array that contains pointers to the base objects (polygons)
+///@param selection used to select what to do
 /// 
 
 
@@ -8,23 +13,23 @@
 #include "RightTriangle.h"
 #include "Rhombus.h"
 #include "Rectangle.h"
+#define LIMIT 100 
 
 
 
 int main() {
 
-	// interfaccia menu
+	// menu interface
 
 	cout << "Welcome to the menu selection of polygons" << endl;
 
-
-	Polygon* pgons[100];
+	Polygon* pgons[LIMIT];
 	// inizializing the array of pointers to zero
-	for (int k = 0; k < 100; k++) {
+	for (int k = 0; k < LIMIT; k++) {
 		pgons[k] = 0;
 	}
-
-	int cnt = 0;
+	// initializing the object counter to 0
+	int cnt = 0; 
 
 	while (true) {
 
@@ -36,74 +41,88 @@ int main() {
 		cout << "Select 4 to draw the object you have created" << endl;
 		cout << "Select 5 to exit" << endl;
 
-
-
-
-		int selection = 0;
+		int selection;
 		scanf_s("%i", &selection);
-
+		int flag = 0;	// used to avoid creating objects over the limit
 		switch (selection) {
-
-		case 1:
-
-			cout << "Insert lenght " << endl;
-			float l, w;
-			scanf_s("%f", &l);
-			cout << "Insert width" << endl;
-			scanf_s("%f", &w);
-			pgons[cnt] = new Rectangle(l,w);
-
-			cnt++;
+		
+		case 1: //rectangle case
+			
+			if (cnt > LIMIT-1) {	//limit control
+				cout << "you reached the limit, you can't create more objects" << endl;
+				flag= 1;
+			}
+			if (flag == 0) {
+				cout << "Insert lenght " << endl;
+				float l, w;
+				scanf_s("%f", &l);
+				cout << "Insert width" << endl;
+				scanf_s("%f", &w);
+				pgons[cnt] = new Rectangle(l,w);
+				cnt++;
+			}
+			
 			break;
 
-		case 2:
-
-			cout << "Insert horizontal diagonal " << endl;
-			float dH, dV;
-			scanf_s("%f", &dH);
-			cout << "Insert vertical diagonal" << endl;
-			scanf_s("%f", &dV);
-			pgons[cnt] = new Rhombus(dH, dV);
-
-			cnt++;
+		case 2:	//rhombus case
+			
+			if (cnt > LIMIT-1) {	//limit control
+				cout << "you reached the limit, you can't create more objects" << endl;
+				flag= 1;
+			}
+			if (flag == 0) {
+				cout << "Insert horizontal diagonal " << endl;
+				float dH, dV;
+				scanf_s("%f", &dH);
+				cout << "Insert vertical diagonal" << endl;
+				scanf_s("%f", &dV);
+				pgons[cnt] = new Rhombus(dH, dV);
+				cnt++;
+			}
+			
 			break;
-		case 3:
-
-			cout << "Insert base " << endl;
-			float b, a;
-			scanf_s("%f", &b);
-			cout << "Insert altitude" << endl;
-			scanf_s("%f", &a);
-			pgons[cnt] = new RightTriangle(b, a);
-
-
-			cnt++;
+		case 3:	//right triangle case
+			
+			if (cnt > LIMIT-1) {	//limit control
+				cout << "you reached the limit, you can't create more objects" << endl;
+				flag = 1;
+			}
+			if (flag == 0) {
+				cout << "Insert base " << endl;
+				float b, a;
+				scanf_s("%f", &b);
+				cout << "Insert altitude" << endl;
+				scanf_s("%f", &a);
+				pgons[cnt] = new RightTriangle(b, a);
+				cnt++;
+			}
+			
 			break;
 
-		case 4:
-			cout << "insert the index of the polygon you want to draw (0 is the first)" << endl;
+		case 4:	//draw case
+			cout << "insert the index of the polygon you want to draw (from 1 to 100)" << endl;
 			int index;
 			scanf_s("%i", &index);
-			if (index < 0 || pgons[index] == NULL || index>100) {
+			if (index-1 < 0 || pgons[index-1] == NULL || index-1> LIMIT-1) {
 				cout << "Not valid index" << endl;
 				break;
 			}
-			pgons[index]->Draw();
-			cout << "Area is " << pgons[index]->GetArea() << endl;
-			cout << "Perimeter is " << pgons[index]->GetPerimeter() << endl;
+			pgons[index-1]->Draw();
+			cout << "Area is " << pgons[index-1]->GetArea() << endl;
+			cout << "Perimeter is " << pgons[index-1]->GetPerimeter() << endl;
 
 			break;
-		case 5:
+		case 5: //exit case
 			exit(0);
 			break;
 
 		default:
-			cout << "Not valid selection" << endl;
-			break;
+			cout << "Not valid selection,restart the program" << endl;
+			exit(0);
 		}
-
 	}
-	for (int k = 0; k < 100; k++) {
+	// deleting objects
+	for (int k = 0; k < LIMIT; k++) {
 		delete pgons[k];
 	}
 
